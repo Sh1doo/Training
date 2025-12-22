@@ -26,12 +26,8 @@ struct TrainingApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if authViewModel.isAuthenticated {
-                ContentView()
-                    .environmentObject(authViewModel)
-            } else {
-                SignInView(authViewModel: authViewModel)
-            }
+            RootView()
+                .environmentObject(authViewModel)
         }
     }
 }
