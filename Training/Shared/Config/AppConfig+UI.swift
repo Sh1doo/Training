@@ -1,3 +1,5 @@
+import SwiftUI
+
 /// UIデザインに関する共通設定
 extension AppConfig {
     enum UI {
