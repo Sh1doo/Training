@@ -10,12 +10,12 @@ import SwiftData
 import RealmSwift
 
 struct _MakeTrainingListView: View {
-    @ObservedObject var model: TrainingListViewModel
+    @ObservedObject var model: MakeTrainingListViewModel
     // リスト作成中の日付
     let editingdate: Date
     
-    @State private var selectedBigCategory =  LocalizedText(english: "upperbody", japanese: "上半身")
-    @State private var selectedSmallCategory = LocalizedText(english: "none", japanese: "none")
+    @State private var selectedBigCategory =  BodyCategory.upperBody
+    @State private var selectedSmallCategory = BodyCategory.none
     
     @State private var showSheet = false
     
@@ -24,13 +24,10 @@ struct _MakeTrainingListView: View {
     
     var body: some View {
         VStack {
-            // 大カテゴリタブ
             categoryTabs
 
-            if selectedBigCategory.english != "none" {
-                // 小カテゴリタブ
+            if selectedBigCategory != BodyCategory.none {
                 smallCategoryTabs
-                // メニュー一覧
                 menuList
             }
             
@@ -48,17 +45,16 @@ struct _MakeTrainingListView: View {
             }
             
             .sheet(isPresented: $showSheet){
-                
                 VStack {
                     List {
-                        ForEach(0..<model.trainingList.count, id: \.self) { index in
+                        ForEach(0..<model.dayTrainingList.count, id: \.self) { index in
                             VStack(alignment:.leading) {
-                                Text("\(model.trainingList[index].name)")
+                                Text("\(model.dayTrainingList[index].name)")
                                     .font(.headline)
                                 HStack(spacing: 0) {
                                     Button(action:{
                                         selectedWeight[index] -= 10
-                                        model.trainingList[index].weight -= 10
+                                        model.dayTrainingList[index].weight -= 10
                                     }) {
                                         Image(systemName: "chevron.left.2")
                                             .modifier(StepperButtonStyle())
@@ -66,7 +62,7 @@ struct _MakeTrainingListView: View {
                                     
                                     Button(action:{
                                         selectedWeight[index] -= 1
-                                        model.trainingList[index].weight -= 1
+                                        model.dayTrainingList[index].weight -= 1
                                     }) {
                                         Image(systemName: "chevron.left")
                                             .modifier(StepperButtonStyle())
@@ -83,7 +79,7 @@ struct _MakeTrainingListView: View {
                                     Spacer()
                                     Button(action:{
                                         selectedWeight[index] += 1
-                                        model.trainingList[index].weight += 1
+                                        model.dayTrainingList[index].weight += 1
                                     }) {
                                         Image(systemName: "chevron.right")
                                             .modifier(StepperButtonStyle())
@@ -91,7 +87,7 @@ struct _MakeTrainingListView: View {
                                     
                                     Button(action:{
                                         selectedWeight[index] += 10
-                                        model.trainingList[index].weight += 10
+                                        model.dayTrainingList[index].weight += 10
                                     }) {
                                         Image(systemName: "chevron.right.2")
                                             .modifier(StepperButtonStyle())
@@ -100,7 +96,7 @@ struct _MakeTrainingListView: View {
                                 HStack(spacing: 0) {
                                     Button(action:{
                                         selectedCount[index] -= 10
-                                        model.trainingList[index].count -= 10
+                                        model.dayTrainingList[index].count -= 10
                                     }) {
                                         Image(systemName: "chevron.left.2")
                                             .modifier(StepperButtonStyle())
@@ -108,7 +104,7 @@ struct _MakeTrainingListView: View {
                                     
                                     Button(action:{
                                         selectedCount[index] -= 1
-                                        model.trainingList[index].count -= 1
+                                        model.dayTrainingList[index].count -= 1
                                     }) {
                                         Image(systemName: "chevron.left")
                                             .modifier(StepperButtonStyle())
@@ -125,7 +121,7 @@ struct _MakeTrainingListView: View {
                                     Spacer()
                                     Button(action:{
                                         selectedCount[index] += 1
-                                        model.trainingList[index].count += 1
+                                        model.dayTrainingList[index].count += 1
                                     }) {
                                         Image(systemName: "chevron.right")
                                             .modifier(StepperButtonStyle())
@@ -133,7 +129,7 @@ struct _MakeTrainingListView: View {
                                     
                                     Button(action:{
                                         selectedCount[index] += 10
-                                        model.trainingList[index].count += 10
+                                        model.dayTrainingList[index].count += 10
                                     }) {
                                         Image(systemName: "chevron.right.2")
                                             .modifier(StepperButtonStyle())
@@ -142,7 +138,7 @@ struct _MakeTrainingListView: View {
                             }
                         }
                         .onDelete { indexSet in
-                            model.trainingList.remove(atOffsets: indexSet)
+                            model.dayTrainingList.remove(atOffsets: indexSet)
                         }
                     }
                     
@@ -151,7 +147,7 @@ struct _MakeTrainingListView: View {
                         showSheet.toggle()
                         
                         // Realmへの保存
-                        model.saveToRealm(date: editingdate, list: model.trainingList)
+                        model.saveToRealm(date: editingdate, list: model.dayTrainingList)
                     }){
                         ZStack{
                             Rectangle()
@@ -162,9 +158,9 @@ struct _MakeTrainingListView: View {
                         }
                     }
                 }.onAppear(){
-                    for index in 0..<model.trainingList.count {
-                        selectedWeight[index] = model.trainingList[index].weight
-                        selectedCount[index] = model.trainingList[index].count
+                    for index in 0..<model.dayTrainingList.count {
+                        selectedWeight[index] = model.dayTrainingList[index].weight
+                        selectedCount[index] = model.dayTrainingList[index].count
                     }
                 }
             }
@@ -198,13 +194,12 @@ struct _MakeTrainingListView: View {
             }
         }
     }
-    
-    
+
     /// 小カテゴリタブ
     private var smallCategoryTabs: some View {
         ScrollView(.horizontal){
             HStack{
-                ForEach(model.SelectCategories(category: selectedBigCategory.english), id:\.self) { smallcategory in
+                ForEach(model.SwitchCategories(category: selectedBigCategory.english), id:\.self) { smallcategory in
                     Button(action: {
                         selectedSmallCategory = smallcategory
                     }){
@@ -235,9 +230,9 @@ struct _MakeTrainingListView: View {
     /// メニュー一覧
     private var menuList: some View {
         ScrollView {
-            ForEach(model.trainingMenus.filter{$0.category == selectedSmallCategory.english}) { menu in
+            ForEach(model.trainingMenus.filter{$0.category == selectedSmallCategory}) { menu in
                 HStack {
-                    Text(menu.name)
+                    Text(menu.name.localized)
                         .padding()
                     Spacer()
                 }
@@ -248,8 +243,8 @@ struct _MakeTrainingListView: View {
                 .padding(.horizontal)
                 .onTapGesture {
                     model.addTrainingList(menu: menu)
-                    selectedWeight[model.trainingList.count-1] = 30
-                    selectedCount[model.trainingList.count-1] = 10
+                    selectedWeight[model.dayTrainingList.count-1] = 30
+                    selectedCount[model.dayTrainingList.count-1] = 10
                 }
             }
         }
@@ -258,5 +253,5 @@ struct _MakeTrainingListView: View {
 }
 
 #Preview {
-    _MakeTrainingListView(model: TrainingListViewModel(), editingdate: Date())
+    _MakeTrainingListView(model: MakeTrainingListViewModel(), editingdate: Date())
 }

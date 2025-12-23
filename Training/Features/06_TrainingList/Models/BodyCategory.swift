@@ -1,20 +1,25 @@
 import Foundation
 
-enum BodyCategory: String, CaseIterable, Identifiable {
-    case upperbody = AppConfig.Text.upperBody
-    case lowerbody = AppConfig.Text.lowerBody
-    case chest = AppConfig.Text.chest
-    case arm = AppConfig.Text.arm
-    case abs = AppConfig.Text.abs
-    case shoulder = AppConfig.Text.shoulder
-    case back = AppConfig.Text.back
-    case thigh = AppConfig.Text.thigh
-    case calf = AppConfig.Text.calf
-    case gluteal = AppConfig.Text.gluteal
-    case hip = AppConfig.Text.hip
-    case none = AppConfig.Text.none
-
+/// 体の部位カテゴリ
+/// - Note: DBのカテゴリ項目と一致させること
+enum BodyCategory: String, CaseIterable, Identifiable, Codable {
+    case upperbody = "upperbody"
+    case lowerbody = "lowerbody"
+    case chest = "chest"
+    case arm = "arm"
+    case abs = "abs"
+    case shoulder = "shoulder"
+    case back = "back"
+    case thigh = "thigh"
+    case calf = "calf"
+    case gluteal = "gluteal"
+    case hip = "hip"
+    case none = "none"
     var id: Self { self }
+
+    var localized: String {
+        return String(localized: .init(self.rawValue))
+    }
     
     var sortOrder: Int {
         switch self {
