@@ -10,8 +10,8 @@ import SwiftUI
 struct TrainingListView: View {
     @ObservedObject var model: TrainingListViewModel
 
-    @State private var selectedBigCategory =  LocalizedText(english: "upperbody", japanese: "上半身")
-    @State private var selectedSmallCategory = LocalizedText(english: "none", japanese: "none")
+    @State private var selectedBigCategory = BodyCategory.upperBody
+    @State private var selectedSmallCategory = BodyCategory.none
     
     @State private var selectedItem = 1
     @State private var searchText = ""
@@ -28,7 +28,7 @@ struct TrainingListView: View {
             
             //上半身・下半身選択タブ
             HStack(spacing: 0) {
-                ForEach(model.bigCategories, id:\.self) { bigCategory in
+                ForEach(BodyCategory.bigCategories, id:\.self) { bigCategory in
                     Button(action: {
                         selectedBigCategory = bigCategory
                     }){
@@ -36,7 +36,7 @@ struct TrainingListView: View {
                             Rectangle()
                                 .fill(Color.blue100)
                                 .frame(height:40)
-                            Text(bigCategory.japanese)
+                            Text(bigCategory.rawValue)
                                 .foregroundStyle(Color.white)
                                 .fontWeight(.bold)
                                 .font(.title3)
@@ -47,14 +47,13 @@ struct TrainingListView: View {
             }
             
             //細かい分類のタブ
-            if selectedBigCategory.english != "none" {
+            if selectedBigCategory != BodyCategory.none {
                 ScrollView(.horizontal){
                     HStack{
-                        ForEach(model.SelectCategories(category: selectedBigCategory.english), id:\.self) { smallcategory in
+                        ForEach(model.SwitchCategories(category: selectedBigCategory), id:\.self) { smallcategory in
                             Button(action: {
                                 selectedSmallCategory = smallcategory
                             }){
-                                //Rectangle().stroke().frame(minWidth: 100, maxHeight: 30)
                                 HStack{
                                     ZStack {
                                         Circle()
@@ -66,7 +65,7 @@ struct TrainingListView: View {
                                                 .frame(width: 10)
                                         }
                                     }
-                                    Text(smallcategory.japanese)
+                                    Text(smallcategory.rawValue)
                                         .foregroundStyle(Color.black)
                                     
                                 }
@@ -79,7 +78,7 @@ struct TrainingListView: View {
                 
                 //トレーニング種目のデータ一覧
                 ScrollView {
-                    let menus = model.trainingMenus.filter({$0.category == selectedSmallCategory.english})
+                    let menus = model.trainingMenus.filter({$0.category == selectedSmallCategory.rawValue})
                     let sortedMenus = menus.sorted {$0.favorite > $1.favorite}
                     
                     ForEach(sortedMenus) { menu in

@@ -30,31 +30,10 @@ class TrainingListViewModel: ObservableObject {
     let maxWeight = 120
     let maxCount = 60
     
-    //カテゴリを上半身と下半身に大別する
-    let bigCategories = [
-        LocalizedText(english: "upperbody", japanese: "上半身"),
-        LocalizedText(english: "lowerbody", japanese: "下半身")
-    ]
-    
-    //上半身に分類した体の部位
-    let upperCategories = [
-        LocalizedText(english: "chest", japanese: "胸"),
-        LocalizedText(english: "arm", japanese: "腕"),
-        LocalizedText(english: "abs", japanese: "腹"),
-        LocalizedText(english: "shoulder", japanese: "肩"),
-        LocalizedText(english: "back", japanese: "背中")
-    ]
-    
-    //下半身に分類した体の部位
-    let lowerCategories = [
-        LocalizedText(english: "thigh", japanese: "太もも"),
-        LocalizedText(english: "calf", japanese: "ふくらはぎ"),
-        LocalizedText(english: "gluteal", japanese: "臀部"),
-        LocalizedText(english: "hip", japanese: "股関節")
-    ]
-    
-    //データベースの初期化
-    // var db = Firestore.firestore()
+    // カテゴリー配列
+    // let bigCategories = BodyCategory.bigCategories
+    // let upperCategories = BodyCategory.upperCategories
+    // let lowerCategories = BodyCategory.lowerCategories
     
     init(){
         //とりあえず当日のリストを読み込む
@@ -85,11 +64,14 @@ class TrainingListViewModel: ObservableObject {
         #endif
     }
     
-    func SelectCategories(category: String) -> [LocalizedText] {
-        if category == "upperbody" {
-            return self.upperCategories
+    /// 大カテゴリに応じた小カテゴリ配列を返す
+    /// - Parameter category: 大カテゴリ
+    /// - Returns: 小カテゴリ配列
+    func SwitchCategories(category: BodyCategory) -> [BodyCategory] {
+        if category == .upperbody {
+            return Body.upperCategories
         } else {
-            return self.lowerCategories
+            return Body.lowerCategories
         }
     }
     

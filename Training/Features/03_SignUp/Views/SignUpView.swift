@@ -17,8 +17,6 @@ struct SignUpView: View {
             HomeView()
         } else {
             ZStack {
-                //背景
-                
                 VStack {
                     Spacer()
                     Text("新規登録")
@@ -33,7 +31,7 @@ struct SignUpView: View {
                         .padding(.horizontal)
                     
                     if email != "" && password != "" {
-                        Button("Sign Up") {
+                        Button(AppConfig.Text.signUp) {
                             authViewModel.signUp(email: email, password: password)
                         }
                         .modifier(TrainingMenuButtonStyle())

@@ -93,4 +93,3 @@ struct LocalizedText: Hashable {
     let english: String
     let japanese: String
 }
-

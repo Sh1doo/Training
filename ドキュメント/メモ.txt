@@ -1,0 +1,124 @@
+
+ステップ	コマンド	内容
+複製	git clone	ネットからPCへコピー
+分岐	git checkout -b	作業用のブランチ作成
+予約	git add	変更を記録対象にする
+記録	git commit	PC内での履歴確定
+送信	git push	GitHubへ反映
+
+feature/: 新機能の追加（例：feature/login-screen）
+bugfix/ または fix/: バグの修正（例：fix/header-typo）
+refactor/: リファクタリング（例：refactor/db-query）
+docs/: ドキュメントの修正（例：docs/readme-update）
+
+Swagger
+
+ViewModel 
+Model
+Viewへ既存コードの分解を行う必要がある
+
+最終リモートにプッシュするが、プルはせず参照、置き換えのみで対応する。
+
+ProjectRoot/
+├── App/                 # AppDelegate, Appファイルなど
+├── Common/              # プロジェクト全体で使う部品（Extension, CustomView, Models）
+├── Features/            # ★機能ごとのまとまり
+│   ├── Friend/         # フレンド機能
+│   │   ├── Models/
+│   │   ├── ViewModels/
+│   │   └── Views/
+│   ├── Chat/            # チャット機能
+│   │   ├── Models/
+│   │   ├── ViewModels/
+│   │   └── Views/
+│   └── Profile/         # プロフィール機能
+└── Services/             # API通信やDB操作（NetworkService, RealmService）
+
+役割	プロパティラッパー	使い方
+生成・保持	@StateObject	最初に ViewModel() を作るViewで使う
+	親：@StateObject var viewModel = UserViewModel()
+	　：ChildView(viewModel: viewModel)
+受け取り	@ObservedObject	引数として渡されるViewで使う
+	子：@ObservedObject var viewModel: UserViewModel
+共有	@EnvironmentObject	階層が深い、またはアプリ全体で使う場合に使う
+	親：ParentView().environmentObject(viewModel)
+	孫：@EnvironmentObject var viewModel: UserViewModel
+	
+var statusColor: Color {
+    if user.isOnline {
+        return .green
+    } else {
+        return .gray
+    }
+}
+
+Command (⌘) + Option (⌥) + /
+これでコメントのひな型を自動インサートしてくれる。
+
+
+// MARK: - Properties
+// MARK: - Methods
+
+/// ユーザーが入力した年齢に基づき、会員登録が可能かどうかを判定する。
+///
+/// この判定には法規制（18歳未満禁止）およびアプリ独自のポリシーが適用されます。
+///
+/// - Parameter age: 判定対象の年齢
+/// - Returns: 登録可能な場合は `true`、それ以外は `false`
+/// - Note: 誕生日当日は「登録可能」として扱われます。
+func canRegister(age: Int) -> Bool {
+    return age >= 18
+}
+2. 非同期処理・通信関連（副作用の明示）
+非同期処理は「いつ終わるか」「何が変わるか」が重要なので、それを明記します。
+
+Swift
+
+/// サーバーから最新のプロフィール情報を取得し、画面を更新する。
+///
+/// 通信に成功した場合、`@Published` なプロパティ `currentUser` が自動的に更新され、
+/// 関連するViewが再描画されます。
+///
+/// - Throws: `NetworkError.timeout` 通信がタイムアウトした場合
+/// - Warning: メインスレッド以外から呼び出さないでください。
+func refreshProfile() async throws {
+    // 通信ロジック...
+}
+
+多言語対応 xcstrings
+#Preview {
+    HomeView()
+        .environment(\.locale, .init(identifier: "en")) // 英語で表示
+}
+
+
+// Common/Models/ArticleCategory.swift などの独立したファイル、
+// もしくは AppConfig 内で定義
+enum ArticleCategory: String, CaseIterable {
+    case news = "ニュース"
+    case sports = "スポーツ"
+    case entertainment = "エンタメ"
+    
+    // 全要素を配列として取得できるようにする
+    static var allLabels: [String] {
+        return self.allCases.map { $0.rawValue }
+    }
+}
+
+// AppConfig側ではそれを利用するだけ
+extension AppConfig.Domain {
+    static let articleCategories = ArticleCategory.allLabels
+}
+
+
+import SwiftUI
+
+extension AppConfig {
+    enum Text {
+        // String ではなく LocalizedStringKey を使う
+        static let welcome: LocalizedStringKey = "welcome_message"
+        static let loginError: LocalizedStringKey = "login_error_network"
+    }
+}
+
+Domainがよさそう、

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct _CalendarView: View {
     // Model
-    @StateObject private var model = CalendarModel()
+    @StateObject private var model = CalendarViewModel()
     @StateObject private var colorModel = ColorModel()
     @ObservedObject var trainingListViewModel: TrainingListViewModel
 
