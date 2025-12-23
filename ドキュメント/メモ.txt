@@ -122,3 +122,51 @@ extension AppConfig {
 }
 
 Domainがよさそう、
+
+
+正しい定義の書き方
+Swift
+
+// 1. AをCodable（Firestore連携用）にする
+struct A: Codable {
+    var a: String
+    var b: CustomEnum
+}
+
+// 2. CustomEnumを Codable かつ String 継承にする
+enum CustomEnum: String, Codable {
+    case x = "x"
+    case y = "y"
+    case z = "z"
+
+    // 以前お話しした「個別の色」などは、計算プロパティで持たせるのがスマート
+    var color: Color {
+        switch self {
+        case .x: return .blue
+        case .y: return .red
+        case .z: return .green
+        }
+    }
+}
+なぜこれで「自動変換」されるのか？
+Codable な enum が String（または Int）を継承している場合、Swiftの JSONDecoder（Firestoreの内部でも使われています）は以下のように動きます。
+
+DBから "x" という文字列が届く。
+
+CustomEnum が String 継承なので、CustomEnum(rawValue: "x") を試みる。
+
+一致するケース（.x）が見つかるので、そのまま代入する。
+
+もしDBに「定義にない文字」が入っていたら？
+ここが大規模開発での注意点です。もしDBに "w" という、enum で定義していない文字が入っていた場合、A 全体のデコードが失敗してエラー（catch）に飛びます。
+
+もし「定義外の文字が入っていても、とりあえずデフォルト値（例えば .x）にしたい」という場合は、以下のように init(from:) をカスタマイズして書くこともありますが、基本的にはDB側のデータ整合性を保つのが正攻法です。
+
+💡 補足：private var color について
+コード例に private var color = Color.blue とありましたが、enum の中にストアドプロパティ（値を直接保持する変数）は置けないというルールがあります。
+
+上記のように var color: Color { switch self { ... } } と 計算プロパティ にすることで、デコード対象（DBに保存する値）からは外れつつ、View側で item.b.color と呼び出せるようになります。
+
+これで、Firestoreから取ってきたデータをそのままSwiftUIの強力な enum 機能で扱えるようになりますね！
+
+次は、このデータを 「Firestoreからリアルタイムに取得して、変更があったら自動で画面を更新する（addSnapshotListener）」 方法に興味はありますか？
