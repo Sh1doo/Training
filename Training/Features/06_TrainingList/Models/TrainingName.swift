@@ -1,6 +1,6 @@
 import Foundation
 
-enum TrainingName: String, CaseIterable {
+enum TrainingName: String, CaseIterable, Codable {
     case squat = "Squat"
     case benchPress = "BenchPress"
     case deadlift = "Deadlift"

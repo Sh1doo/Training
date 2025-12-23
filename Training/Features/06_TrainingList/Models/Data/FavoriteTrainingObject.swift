@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-// RealmDB[] お気に入りトレーニングメニュー
+/// お気に入りトレーニング
 class FavoriteTrainingObject: Object, ObjectKeyIdentifiable {
     @Persisted var name: String
     @Persisted var isFavorite = false

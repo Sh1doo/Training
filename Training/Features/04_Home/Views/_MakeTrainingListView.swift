@@ -14,7 +14,7 @@ struct _MakeTrainingListView: View {
     // リスト作成中の日付
     let editingdate: Date
     
-    @State private var selectedBigCategory =  BodyCategory.upperBody
+    @State private var selectedBigCategory =  BodyCategory.upperbody
     @State private var selectedSmallCategory = BodyCategory.none
     
     @State private var showSheet = false
@@ -176,7 +176,7 @@ struct _MakeTrainingListView: View {
     
     private var categoryTabs: some View {
         HStack(spacing: 0) {
-            ForEach(model.bigCategories, id:\.self) { bigCategory in
+            ForEach(BodyCategory.bigCategories, id:\.self) { bigCategory in
                 Button(action: {
                     selectedBigCategory = bigCategory
                 }){
@@ -184,7 +184,7 @@ struct _MakeTrainingListView: View {
                         Rectangle()
                             .fill(Color.blue100)
                             .frame(height:40)
-                        Text(bigCategory.japanese)
+                        Text(bigCategory.localized)
                             .foregroundStyle(Color.white)
                             .fontWeight(.bold)
                             .font(.title3)
@@ -199,11 +199,10 @@ struct _MakeTrainingListView: View {
     private var smallCategoryTabs: some View {
         ScrollView(.horizontal){
             HStack{
-                ForEach(model.SwitchCategories(category: selectedBigCategory.english), id:\.self) { smallcategory in
+                ForEach(model.SwitchCategories(category: selectedBigCategory), id:\.self) { smallcategory in
                     Button(action: {
                         selectedSmallCategory = smallcategory
                     }){
-                        //Rectangle().stroke().frame(minWidth: 100, maxHeight: 30)
                         HStack{
                             ZStack {
                                 Circle()
@@ -215,9 +214,8 @@ struct _MakeTrainingListView: View {
                                         .frame(width: 10)
                                 }
                             }
-                            Text(smallcategory.japanese)
+                            Text(smallcategory.localized)
                                 .foregroundStyle(Color.black)
-                            
                         }
                     }
                 }
@@ -242,7 +240,7 @@ struct _MakeTrainingListView: View {
                 .cornerRadius(10)
                 .padding(.horizontal)
                 .onTapGesture {
-                    model.addTrainingList(menu: menu)
+                    model.addTraining(menu: menu)
                     selectedWeight[model.dayTrainingList.count-1] = 30
                     selectedCount[model.dayTrainingList.count-1] = 10
                 }

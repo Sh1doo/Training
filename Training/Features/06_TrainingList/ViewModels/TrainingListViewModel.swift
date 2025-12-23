@@ -11,97 +11,82 @@ import FirebaseFirestore
 import RealmSwift
 
 class TrainingListViewModel: ObservableObject {
+    @Published var selectedSmallCategory: BodyCategory = .none
+    @Published var dayTrainingList: [TrainingSet] = []
     @Published var trainingMenus: [TrainingMenu] = []
     @Published var isFavoriteArray: [String: Bool] = [:]
-    
     @Published var isFetched = false
-    @Published var dayTrainingList: [TrainingSet] = [] // trainingList
+    
+    let service = MakeTrainingListService()
     
     // カレンダー関連
     let calendar = Calendar.current
     
-    // Realm 「Result」
-    private var trainingListFromRealm: Results<TrainingLogRealmObject> = realm.objects(TrainingLogRealmObject.self)
-    private var favoriteFromRealm: Results<FavoriteRealmObject> = realm.objects(FavoriteRealmObject.self)
-    
-    //これいるの？
-    @Published var currentAddedTraining: ListedTraining = ListedTraining(name: "none", category: "none", weight: 0, count: 0, set: 1)
-    
-    let maxWeight = 120
-    let maxCount = 60
-    
-    init(){
-        //とりあえず当日のリストを読み込む
-        trainingList = getListedTrainingFromRealm(dateComponents: getDateComponents(date: Date()))
+    /// 選択されたカテゴリ内のメニュー一覧
+    var filteredMenus: [TrainingMenu] {
+        trainingMenus
+            .filter { $0.category == selectedSmallCategory }
+            .sorted { $0.favorite > $1.favorite }
     }
-    
-    //トレーニングメニューをFirestoreからフェッチする
-    // func fetchTrainingMenus() async{
-    //     #if DEBUG
-    //     self.trainingMenus = TrainingMenu.mock
-    //     #else
-    //     Task {
-    //         do {
-    //             let snapshot = try await db.collection("training-menu").getDocuments()
-                
-    //             let fetchedMenus = snapshot.documents.compactMap { document -> TrainingMenu? in
-    //                 try? document.data(as: TrainingMenu.self)
-    //             }
-                
-    //             await MainActor.run {
-    //                 self.trainingMenus = fetchedMenus
-    //                 self.isFetched = true
-    //             }
 
-    //         } catch {
-    //             print("Error getting documents: \(error)")
-    //         }
-    //     }
-    //     #endif
-    // }
+    /// トレーニングメニュー一覧をFireStoreから取得
+    func fetchTrainingMenus() async {
+        #if DEBUG
+        self.trainingMenus = TrainingMenu.mock
+        #else
+        Task {
+            do {
+                trainingMenus = try await service.fetchTrainingMenus()
+                self.isFetched = true
+            } catch {
+                print("Error getting documents: \(error)")
+            }
+        }
+        #endif
+    }
     
     /// 大カテゴリに応じた小カテゴリ配列を返す
     /// - Parameter category: 大カテゴリ
     /// - Returns: 小カテゴリ配列
     func SwitchCategories(category: BodyCategory) -> [BodyCategory] {
         if category == .upperbody {
-            return Body.upperCategories
+            return BodyCategory.upperCategories
         } else {
-            return Body.lowerCategories
+            return BodyCategory.lowerCategories
         }
     }
 
     // トレーニングログをRealmに書き込む
-    func writeTrainingLogRealm(date: Date, trainingData: [TrainingRealmObject]){
-        try! realm.write {
-            realm.add(TrainingLogRealmObject(trainingDate: date, trainingData: trainingData, mark: categoryToMark(category: trainingList.last!.category)))
-        }
-    }
-    
+//    func writeTrainingLogRealm(date: Date, trainingData: [TrainingRealmObject]){
+//        try! realm.write {
+//            realm.add(TrainingLogRealmObject(trainingDate: date, trainingData: trainingData, mark: categoryToMark(category: trainingList.last!.category)))
+//        }
+//    }
+//    
     // TraininRealmObjectをListedTrainingに変換
-    func convertToListedTraining(from realmObject: TrainingRealmObject) -> ListedTraining {
-        // [FindHere] トレーニング名で[trainingMenus]を検索してcategoryを入手（一応実装済み）
-        var trainingCategory: String = "missing"
-        trainingMenus.filter { $0.name == realmObject.name }.forEach { filteredMenu in
-            trainingCategory = filteredMenu.category
-        }
-        
-        return ListedTraining(name: realmObject.name, category: trainingCategory, weight: realmObject.weight, count: realmObject.count, set: realmObject.set)
-    }
+//    func convertToListedTraining(from realmObject: TrainingRealmObject) -> ListedTraining {
+//        // [FindHere] トレーニング名で[trainingMenus]を検索してcategoryを入手（一応実装済み）
+//        var trainingCategory: String = "missing"
+//        trainingMenus.filter { $0.name == realmObject.name }.forEach { filteredMenu in
+//            trainingCategory = filteredMenu.category
+//        }
+//        
+//        return ListedTraining(name: realmObject.name, category: trainingCategory, weight: realmObject.weight, count: realmObject.count, set: realmObject.set)
+//    }
     
     // [TraininRealmObject]を[ListedTraining]に変換
-    func convertToListedTraining(from realmObject: RealmSwift.List<TrainingRealmObject>) -> [ListedTraining] {
-        var listedTrainingArray: [ListedTraining] = []
-        realmObject.forEach { obj in
-            listedTrainingArray.append(convertToListedTraining(from: obj))
-        }
-        return listedTrainingArray
-    }
+//    func convertToListedTraining(from realmObject: RealmSwift.List<TrainingSetObject>) -> [TrainingSet] {
+//        var listedTrainingArray: [TrainingSet] = []
+//        realmObject.forEach { obj in
+//            listedTrainingArray.append(convertToListedTraining(from: obj))
+//        }
+//        return listedTrainingArray
+//    }
     
     // DateをDateComponent[年月日]に変換
-    func getDateComponents(date: Date) -> DateComponents {
-        return calendar.dateComponents([.year, .month, .day], from: date)
-    }
+//    func getDateComponents(date: Date) -> DateComponents {
+//        return calendar.dateComponents([.year, .month, .day], from: date)
+//    }
     
     // [TrainingSet]を[TraininSetObject]に変換
     // func convertToTrainingRealmObject(from listedTraining: [TrainingSet]) -> [TrainingSetObject] {
@@ -113,109 +98,71 @@ class TrainingListViewModel: ObservableObject {
     // }
     
     // trainingListをeditingDateのものに更新する
-    func listUpdate(editingDate: Date) {
-        trainingList = getListedTrainingFromRealm(dateComponents: getDateComponents(date: editingDate))
-    }
+//    func listUpdate(editingDate: Date) {
+//        trainingList = getListedTrainingFromRealm(dateComponents: getDateComponents(date: editingDate))
+//    }
     
     // 指定した日付のTrainingListをRealmから変換して返す
     // 指定した日付で探してなければから配列を返す
-    func getListedTrainingFromRealm(dateComponents: DateComponents) -> [ListedTraining] {
-        let returnArray: [ListedTraining] = []
-        if let filteredFromRealm = trainingListFromRealm.where({$0.year == dateComponents.year ?? 0 && $0.month == dateComponents.month ?? 0 && $0.day == dateComponents.day ?? 0}).first {
-            return convertToListedTraining(from: filteredFromRealm.trainingData)
-        }
-        return returnArray
-    }
+//    func getListedTrainingFromRealm(dateComponents: DateComponents) -> [ListedTraining] {
+//        let returnArray: [ListedTraining] = []
+//        if let filteredFromRealm = trainingListFromRealm.where({$0.year == dateComponents.year ?? 0 && $0.month == dateComponents.month ?? 0 && $0.day == dateComponents.day ?? 0}).first {
+//            return convertToListedTraining(from: filteredFromRealm.trainingData)
+//        }
+//        return returnArray
+//    }
     
     //指定した日付のTrainingLogを取得する
-    func getTrainingLog(dateComponents: DateComponents) -> TrainingLogRealmObject {
-        if let filteredFromRealm = trainingListFromRealm.where({$0.year == dateComponents.year ?? 0 && $0.month == dateComponents.month ?? 0 && $0.day == dateComponents.day ?? 0}).first {
-            return filteredFromRealm
-        }
-        //指定した日付の記録がない
-        return TrainingLogRealmObject(trainingDate: calendar.date(from: dateComponents)!, trainingData: [], mark: -1)
-    }
+//    func getTrainingLog(dateComponents: DateComponents) -> TrainingLogObject {
+//        if let filteredFromRealm = trainingListFromRealm.where({$0.year == dateComponents.year ?? 0 && $0.month == dateComponents.month ?? 0 && $0.day == dateComponents.day ?? 0}).first {
+//            return filteredFromRealm
+//        }
+//        //指定した日付の記録がない
+//        return TrainingLogRealmObject(trainingDate: calendar.date(from: dateComponents)!, trainingData: [], mark: -1)
+//    }
     
     //[FindHere]指定した年月のすべての日付にrealmで検索して，なんか配列にぶち込む
     
     
 
     // Likeボタンが押された時favoriteをトグルする
-    func toggleFavorite(menu: TrainingMenu) {
-        do {
-            if let existingItem = favoriteFromRealm.where({$0.name == menu.name}).first {
-                isFavoriteArray[menu.name] = !(existingItem.isFavorite)
-                try realm.write {
-                    existingItem.isFavorite =  !(existingItem.isFavorite)
-                }
-            } else { // RealmにFavorite記録が存在しない(初めてのFavorite)
-                isFavoriteArray[menu.name] = true
-                try realm.write {
-                    let realmObject = FavoriteRealmObject(name: menu.name, isFavorite: true)
-                    realm.add(realmObject)
-                }
-
-                // Firebase Firestoreに書き込み (以降事実上クライアントがtoggleしても意味なし)
-                Task {
-                    if let id = menu.id {
-                        let document = db.collection("training-menu").document(id)
-                        if let data = try await document.getDocument().data() {
-                            if let fetchedFavorite = data["favorite"] as? Int {
-                                try await document.updateData([
-                                    "favorite": fetchedFavorite + 1
-                                ])
-                            }
-                        }
-                    }
-                }
-            }
-        } catch {
-            print("toggle failed. error occured.")
-        }
-    }
-    
-    
-    /// Favoriteかどうかを返す
-    /// - Parameter name: 種目名称
-    /// - Returns: Favoriteかどうか
-    func isFavorite(name: String) -> Bool {
-        if let existingItem = favoriteFromRealm.where({$0.name == name}).first {
-            return existingItem.isFavorite
-        } else {
-            return false
-        }
-    }
+//    func toggleFavorite(menu: TrainingMenu) {
+//        do {
+//            if let existingItem = favoriteFromRealm.where({$0.name == menu.name}).first {
+//                isFavoriteArray[menu.name] = !(existingItem.isFavorite)
+//                try realm.write {
+//                    existingItem.isFavorite =  !(existingItem.isFavorite)
+//                }
+//            } else { // RealmにFavorite記録が存在しない(初めてのFavorite)
+//                isFavoriteArray[menu.name] = true
+//                try realm.write {
+//                    let realmObject = FavoriteRealmObject(name: menu.name, isFavorite: true)
+//                    realm.add(realmObject)
+//                }
+//
+//                // Firebase Firestoreに書き込み (以降事実上クライアントがtoggleしても意味なし)
+//                Task {
+//                    if let id = menu.id {
+//                        let document = db.collection("training-menu").document(id)
+//                        if let data = try await document.getDocument().data() {
+//                            if let fetchedFavorite = data["favorite"] as? Int {
+//                                try await document.updateData([
+//                                    "favorite": fetchedFavorite + 1
+//                                ])
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        } catch {
+//            print("toggle failed. error occured.")
+//        }
+//    }
     
     // isFavoriteArrayに各MenuのisFavorite(Bool)を書き込む
     func loadFavorite() {
         trainingMenus.forEach { menu in
-            isFavoriteArray[menu.name] = isFavorite(name: menu.name)
-        }
-    }
-    
-    // カテゴリー名からIntに変換
-    func categoryToMark(category: String) -> Int{
-        switch category {
-        case "chest":
-            return 0
-        case "arm":
-            return 1
-        case "abs":
-            return 2
-        case "shoulder":
-            return 3
-        case "back":
-            return 4
-        case "thigh":
-            return 5
-        case "calf":
-            return 6
-        case "gluteal":
-            return 7
-        case "hip":
-            return 8
-        default:
-            return -1
+            isFavoriteArray[menu.name.rawValue] = service.isFavorite(trainingName: menu.name.rawValue)
         }
     }
 }

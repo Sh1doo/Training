@@ -10,7 +10,7 @@ import SwiftUI
 struct TrainingListView: View {
     @ObservedObject var model: TrainingListViewModel
 
-    @State private var selectedBigCategory = BodyCategory.upperBody
+    @State private var selectedBigCategory = BodyCategory.upperbody
     @State private var selectedSmallCategory = BodyCategory.none
     
     @State private var selectedItem = 1
@@ -98,10 +98,7 @@ struct TrainingListView: View {
 
     private var menuList: some View {
         ScrollView {
-            let menus = model.trainingMenus.filter({$0.category == selectedSmallCategory})
-            let sortedMenus = menus.sorted {$0.favorite > $1.favorite}
-            
-            ForEach(sortedMenus) { menu in
+            ForEach(model.filteredMenus) { menu in
                 HStack{
                     Text(menu.name.localized)
                     Spacer()
@@ -112,13 +109,13 @@ struct TrainingListView: View {
                         ZStack{
                             Rectangle()
                                 .frame(width: 50, height: 50)
-                                .foregroundStyle(model.isFavoriteArray[menu.name] ?? true ? Color.pink : Color.white)
+                                //.foregroundStyle(model.isFavoriteArray[menu.name.rawValue] ?? true ? Color.pink : Color.white)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                             
                             Image(systemName: "hand.thumbsup.fill")
                                 .resizable()
                                 .frame(width: 30, height: 30)
-                                .foregroundStyle(model.isFavoriteArray[menu.name] ?? true ? Color.white : Color.white100)
+                                //.foregroundStyle(model.isFavoriteArray[menu.name.rawValue] ?? true ? Color.white : Color.white100)
                                 .scaleEffect(x: -1, y: 1)
                         }
                     }.buttonStyle(.plain)

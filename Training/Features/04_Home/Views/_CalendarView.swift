@@ -61,9 +61,9 @@ struct _CalendarView: View {
                                      (model.selectedDay.year ?? 0) == model.calendarViewDate.year &&
                                      (model.selectedDay.month ?? 0) == model.calendarViewDate.month
                     
-                    let isScheduled = !trainingListViewModel.getListedTrainingFromRealm(dateComponents:colDateComponent ).isEmpty
+                    let isScheduled = true//!trainingListViewModel.getListedTrainingFromRealm(dateComponents:colDateComponent ).isEmpty
                     
-                    let mark = trainingListViewModel.getTrainingLog(dateComponents: colDateComponent).mark
+                    //let mark = trainingListViewModel.getTrainingLog(dateComponents: colDateComponent).mark
                     
                     VStack(spacing: 0){
                         ZStack{
@@ -76,7 +76,7 @@ struct _CalendarView: View {
                                 // 予定がある
                                 if isScheduled {
                                     Rectangle()
-                                        .foregroundStyle(colorModel.numberToColor(number: mark))
+                                        //.foregroundStyle(colorModel.numberToColor(number: mark))
                                         .frame(height: 5)
                                 }
                             }

@@ -40,7 +40,9 @@ class SNSViewModel: ObservableObject {
         Friend(uid: "", name: "アイウエオ", level: 1, lastLogin: Date(), lastTraining: "ベンチプレス")
     ]
     
-    private var friendListRealm: Results<FriendRealm> = realm.objects(FriendRealm.self)
+    private var realm: Realm {
+        return RealmConfig.shared.realm
+    }
     
     init() {
         updateFriendList()
@@ -52,7 +54,7 @@ class SNSViewModel: ObservableObject {
             return
         }
         
-        if friendListRealm.where({$0.uid == id}).first != nil {
+        if  realm.objects(FriendRealm.self).where({$0.uid == id}).first != nil {
             //すでに追加されている
             print("already added")
         } else {
@@ -71,7 +73,7 @@ class SNSViewModel: ObservableObject {
         friends = []
         
         var uidList: [String] = []
-        for friend in friendListRealm {
+        for friend in realm.objects(FriendRealm.self) {
             uidList.append(friend.uid)
         }
         

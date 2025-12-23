@@ -19,6 +19,10 @@ class MakeTrainingListViewModel: ObservableObject {
 
     let service = MakeTrainingListService()
 
+    init(){
+        dayTrainingList = service.getTrainingLog(trainingDate: Date().slashDateString)
+    }
+    
     /// トレーニングメニュー一覧をFireStoreから取得
     func fetchTrainingMenus() async {
         #if DEBUG
@@ -35,24 +39,38 @@ class MakeTrainingListViewModel: ObservableObject {
         #endif
     }
     
+    /// 大カテゴリに応じた小カテゴリ配列を返す
+    /// - Parameter category: 大カテゴリ
+    /// - Returns: 小カテゴリ配列
+    func SwitchCategories(category: BodyCategory) -> [BodyCategory] {
+        if category == .upperbody {
+            return BodyCategory.upperCategories
+        } else {
+            return BodyCategory.lowerCategories
+        }
+    }
+    
     /// トレーニング予定の追加
     func addTraining(menu: TrainingMenu) {
         dayTrainingList.append(
             TrainingSet(
-                name: menu.name, 
+                name: menu.name,
                 category: menu.category,
                 weight: 30,
                 count: 10,
                 set: 1
             ))
-        // currentAddedTraining = dayTrainingList.last ?? ListedTraining(name:"none", category:"none", weight:0, count:0, set: 1)
     }
 
-    // Realmへの保存
+    
+    /// Realmへの保存
+    /// - Parameters:
+    ///   - date: トレーニング実施予定日時
+    ///   - list: 登録するトレーニングログ
     func saveToRealm(date: Date, list: [TrainingSet]) {
         let trainingDate = date.slashDateString
         do {
-            try service.saveLogToRealm(trainingDate: trainingDate, trainingData: list)
+            try service.saveLogToRealm(trainingDate: trainingDate, list: list)
         } catch {
             print("Saving to Realm Failed: \(error)")
         }

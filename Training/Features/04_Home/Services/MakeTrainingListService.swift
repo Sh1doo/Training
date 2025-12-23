@@ -1,11 +1,13 @@
 import SwiftUI
+import RealmSwift
 
+@MainActor
 class MakeTrainingListService {
-
+    
     private var realm: Realm {
         return RealmConfig.shared.realm
     }
-
+    
     /// トレーニングメニュー一覧を取得する
     func fetchTrainingMenus() async throws -> [TrainingMenu] {
         let snapshot = try await db.collection(AppConfig.Domain.dbCollection_trainingMenu).getDocuments()
@@ -16,23 +18,27 @@ class MakeTrainingListService {
         
         return fetchedMenus
     }
-
+    
+    
     /// トレーニング予定を保存する
+    /// - Parameters:
+    ///   - trainingDate: 主キー
+    ///   - list: 実施予定トレーニング一覧
     func saveLogToRealm(trainingDate: String, list: [TrainingSet]) throws {
         try realm.write {
-            if let existingItem = realm.objects(TrainingLogObject.self).filter("trainingDate == %@", trainingDate).first {
+            if let trainingLogObject = realm.objects(TrainingLogObject.self).where({$0.trainingDate == trainingDate}).first {
                 // UPDATE
                 let newList = RealmSwift.List<TrainingSetObject>()
-                for trainingSet in existingItem.trainingData {
+                for trainingSet in list {
                     let realmObject = TrainingSetObject()
                     realmObject.setup(from: trainingSet)
                     newList.append(realmObject)
                 }
-                existingItem.trainingData = newList
+                trainingLogObject.trainingData = newList
             } else {
                 // INSERT
                 let newList = RealmSwift.List<TrainingSetObject>()
-                for trainingSet in existingItem.trainingData {
+                for trainingSet in list {
                     let realmObject = TrainingSetObject()
                     realmObject.setup(from: trainingSet)
                     newList.append(realmObject)
@@ -41,5 +47,26 @@ class MakeTrainingListService {
                 realm.add(realmObject)
             }
         }
+    }
+    
+    
+    /// 実施予定日をもとにトレーニングログを取得する
+    /// - Parameters: 実施予定日（slashDateString）
+    /// - Returns: TrainingLogObject→[TrainingSet]に変換して返す
+    func getTrainingLog(trainingDate: String) -> [TrainingSet] {
+        let returnArray: [TrainingSet] = []
+        if let trainingLogObject = realm.objects(TrainingLogObject.self).where({$0.trainingDate == trainingDate}).first {
+            let trainingSetArray: [TrainingSet] = trainingLogObject.trainingData.map { TrainingSet(from: $0) }
+            return trainingSetArray
+        }
+        return returnArray
+    }
+    
+    
+    /// トレーニングをお気に入り登録しているか
+    /// - Parameter trainingName: FirestoreDB登録名称
+    /// - Returns: トレーニングをお気に入り登録しているか
+    func isFavorite(trainingName: String) -> Bool {
+        return realm.objects(FavoriteTrainingObject.self).where({$0.name == trainingName}).first != nil
     }
 }

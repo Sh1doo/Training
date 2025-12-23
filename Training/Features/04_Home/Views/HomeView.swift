@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject var trainingListViewModel = TrainingListViewModel()
+    @StateObject var makeTrainingListViewModel = MakeTrainingListViewModel()
     @StateObject var userModel = UserModel()
     
     //選択中の日付
@@ -28,7 +29,7 @@ struct HomeView: View {
                     
                     Spacer()
                     
-                    NavigationLink(destination: _MakeTrainingListView(model: trainingListViewModel, editingdate: editingDate)){
+                    NavigationLink(destination: _MakeTrainingListView(model: makeTrainingListViewModel, editingdate: editingDate)){
                         Text("編集")
                     }
                     .modifier(TrainingMenuButtonStyle())
@@ -77,12 +78,12 @@ struct TodaysTraining: View {
                 //今日のメニュー
                 ScrollView(showsIndicators: false) {
                     //Training List
-                    ForEach(model.trainingList, id: \.self) { listItem in
+                    ForEach(model.dayTrainingList, id: \.self) { listItem in
                         HStack {
                             Rectangle()
                                 .fill(Color.blue100)
                                 .frame(width: 5)
-                            Text(listItem.name).font(.title3).bold()
+                            Text(listItem.name.localized).font(.title3).bold()
                             Spacer()
                             VStack (alignment: .trailing) {
                                 HStack (spacing: 0){

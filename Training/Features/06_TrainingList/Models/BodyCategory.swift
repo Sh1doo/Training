@@ -2,7 +2,7 @@ import Foundation
 
 /// 体の部位カテゴリ
 /// - Note: DBのカテゴリ項目と一致させること
-enum BodyCategory: String, CaseIterable, Identifiable, Codable {
+enum BodyCategory: String, CaseIterable, Hashable, Codable {
     case upperbody = "upperbody"
     case lowerbody = "lowerbody"
     case chest = "chest"
@@ -15,7 +15,6 @@ enum BodyCategory: String, CaseIterable, Identifiable, Codable {
     case gluteal = "gluteal"
     case hip = "hip"
     case none = "none"
-    var id: Self { self }
 
     var localized: String {
         return String(localized: .init(self.rawValue))

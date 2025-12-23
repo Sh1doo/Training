@@ -12,6 +12,12 @@ import RealmSwift
 class TrainingLogObject: Object, ObjectKeyIdentifiable {
     @Persisted(primaryKey: true) var trainingDate: String
     @Persisted var trainingData: RealmSwift.List<TrainingSetObject>
+    
+    convenience init(trainingDate: String, trainingData: RealmSwift.List<TrainingSetObject>) {
+        self.init()
+        self.trainingDate = trainingDate
+        self.trainingData.append(objectsIn: trainingData)
+    }
 }
 
 /// 単一トレーニングデータ
