@@ -2,8 +2,7 @@ import SwiftUICore
 
 extension AppConfig {
     enum Text {
-        static let signIn: LocalizedStringKey = "signIn"
-        static let signUp: LocalizedStringKey = "signUp"
-        static let getStarted: LocalizedStringKey = "getStarted"
-    }
+        static var signIn: String { String(localized: "signIn") }
+        static var signUp: String { String(localized: "signUp") }
+        static var getStarted: String { String(localized: "getStarted") }
 }

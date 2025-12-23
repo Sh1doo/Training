@@ -8,10 +8,23 @@
 import Foundation
 import RealmSwift
 
-// Realmをインメモリで開く
-let identifier = "MyRealm"
-let config = Realm.Configuration(
-    // schemaVersion: 1
-    inMemoryIdentifier: identifier
-)
-let realm = try! Realm(configuration: config)
+@MainActor
+struct RealmConfig {
+    static let shared = RealmConfig()
+    
+    let realm: Realm
+    
+    private init() {
+        let identifier = "MyRealm"
+        let config = Realm.Configuration(
+            inMemoryIdentifier: identifier,
+            schemaVersion: 1
+        )
+        
+        do {
+            self.realm = try Realm(configuration: config)
+        } catch {
+            fatalError("realm init failed: \(error)")
+        }
+    }
+}

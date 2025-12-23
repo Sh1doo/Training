@@ -15,7 +15,7 @@ class TrainingListViewModel: ObservableObject {
     @Published var isFavoriteArray: [String: Bool] = [:]
     
     @Published var isFetched = false
-    @Published var trainingList: [ListedTraining] = []
+    @Published var dayTrainingList: [TrainingSet] = [] // trainingList
     
     // カレンダー関連
     let calendar = Calendar.current
@@ -30,39 +30,35 @@ class TrainingListViewModel: ObservableObject {
     let maxWeight = 120
     let maxCount = 60
     
-    // カテゴリー配列
-    // let bigCategories = BodyCategory.bigCategories
-    // let upperCategories = BodyCategory.upperCategories
-    // let lowerCategories = BodyCategory.lowerCategories
-    
     init(){
         //とりあえず当日のリストを読み込む
         trainingList = getListedTrainingFromRealm(dateComponents: getDateComponents(date: Date()))
     }
     
     //トレーニングメニューをFirestoreからフェッチする
-    func fetchTrainingMenus() async{
-        #if DEBUG
-        self.trainingMenus = [TrainingMenu(favorite: 0, name: "test", category: "chest", pof: "pof", description: "description"),
-        TrainingMenu(favorite: 0, name: "test", category: "arm", pof: "pof", description: "description")]
-        #else
-        do {
-            let snapshot = try await db.collection("training-menu").getDocuments()
-            for document in snapshot.documents {
-                if let trainingMenu = try?document.data(as: TrainingMenu.self){
-                    DispatchQueue.main.async {
-                        self.trainingMenus.append(trainingMenu)
-                    }
-                }
-            }
-            DispatchQueue.main.async {
-                self.isFetched = true
-            }
-        } catch {
-            print("Error getting documents: \(error)")
-        }
-        #endif
-    }
+    // func fetchTrainingMenus() async{
+    //     #if DEBUG
+    //     self.trainingMenus = TrainingMenu.mock
+    //     #else
+    //     Task {
+    //         do {
+    //             let snapshot = try await db.collection("training-menu").getDocuments()
+                
+    //             let fetchedMenus = snapshot.documents.compactMap { document -> TrainingMenu? in
+    //                 try? document.data(as: TrainingMenu.self)
+    //             }
+                
+    //             await MainActor.run {
+    //                 self.trainingMenus = fetchedMenus
+    //                 self.isFetched = true
+    //             }
+
+    //         } catch {
+    //             print("Error getting documents: \(error)")
+    //         }
+    //     }
+    //     #endif
+    // }
     
     /// 大カテゴリに応じた小カテゴリ配列を返す
     /// - Parameter category: 大カテゴリ
@@ -74,13 +70,7 @@ class TrainingListViewModel: ObservableObject {
             return Body.lowerCategories
         }
     }
-    
-    // トレーニングリストに追加
-    func addTrainingList(menu: TrainingMenu) {
-        trainingList.append(ListedTraining(name: menu.name, category: menu.category, weight: 30, count: 10, set: 1))
-        currentAddedTraining = trainingList.last ?? ListedTraining(name:"none", category:"none", weight:0, count:0, set: 1)
-    }
-    
+
     // トレーニングログをRealmに書き込む
     func writeTrainingLogRealm(date: Date, trainingData: [TrainingRealmObject]){
         try! realm.write {
@@ -113,14 +103,14 @@ class TrainingListViewModel: ObservableObject {
         return calendar.dateComponents([.year, .month, .day], from: date)
     }
     
-    // [ListedTraining]を[TraininRealmObject]に変換
-    func convertToTrainingRealmObject(from listedTraining: [ListedTraining]) -> [TrainingRealmObject] {
-        var newConvertedArray: [TrainingRealmObject] = []
-        for training in listedTraining {
-            newConvertedArray.append(TrainingRealmObject(name: training.name, weight: training.weight, count: training.count, set: training.set))
-        }
-        return newConvertedArray
-    }
+    // [TrainingSet]を[TraininSetObject]に変換
+    // func convertToTrainingRealmObject(from listedTraining: [TrainingSet]) -> [TrainingSetObject] {
+    //     var newConvertedArray: [TrainingSetObject] = []
+    //     for training in listedTraining {
+    //         newConvertedArray.append(TrainingSetObject(name: training.name, weight: training.weight, count: training.count, set: training.set))
+    //     }
+    //     return newConvertedArray
+    // }
     
     // trainingListをeditingDateのものに更新する
     func listUpdate(editingDate: Date) {
@@ -148,29 +138,7 @@ class TrainingListViewModel: ObservableObject {
     
     //[FindHere]指定した年月のすべての日付にrealmで検索して，なんか配列にぶち込む
     
-    // Realmへの保存
-    func saveToRealm(date: Date, list: [ListedTraining]) {
-        // 年月日以外の情報を落として再度Dateに変換
-        if let trainingDate: Date = calendar.date(from: getDateComponents(date: date)) {
-            //[FindHere]もしかしたらResultを直接編集できるかも
-            if let existingItem = realm.objects(TrainingLogRealmObject.self).filter("trainingDate == %@", trainingDate).first {
-                //すでに同日の予定がrealmに追加されている。
-                try! realm.write {
-                    let newList = RealmSwift.List<TrainingRealmObject>()
-                    newList.append(objectsIn: convertToTrainingRealmObject(from: list))
-                    existingItem.trainingData = newList
-                    // マークの変更をするのが合理的に思えるが、後から色を手動で変更したものが変えられるとストレスだからこのままにしておく。
-                }
-            } else {
-                try! realm.write {
-                    let realmObject = TrainingLogRealmObject(trainingDate: trainingDate, trainingData: convertToTrainingRealmObject(from: list), mark: categoryToMark(category: list.last!.category))
-                    realm.add(realmObject)
-                }
-            }
-        } else {
-            print("(dateComponents) -> (date) conversion failed.")
-        }
-    }
+    
 
     // Likeボタンが押された時favoriteをトグルする
     func toggleFavorite(menu: TrainingMenu) {
