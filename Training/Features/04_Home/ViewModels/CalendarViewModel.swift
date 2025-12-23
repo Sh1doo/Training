@@ -11,7 +11,7 @@ import SwiftUI
 // 全体で使用するカレンダー
 let calendar = Calendar.current
 
-class CalendarModel: ObservableObject {
+class CalendarViewModel: ObservableObject {
     
     let sevenColumns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
     let weekName = ["日", "月", "火", "水", "木", "金", "土"]
