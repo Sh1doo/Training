@@ -1,5 +1,6 @@
 import SwiftUI
 import RealmSwift
+import FirebaseFirestore
 
 @MainActor
 class TrainingListService {
@@ -27,7 +28,7 @@ class TrainingListService {
     ///   - isFavorite: お気に入り登録状態
     func updateFavoriteState(trainingName: String, isFavorite: Bool) throws {
         try realm.write {
-            var favoriteTrainingObject = new FavoriteTrainingObject(name: trainingName, isFavorite: isFavorite) 
+            let favoriteTrainingObject = FavoriteTrainingObject(name: trainingName, isFavorite: isFavorite)
             realm.add(favoriteTrainingObject, update: .modified)
         }
     }
@@ -36,15 +37,11 @@ class TrainingListService {
     ///
     /// [FireStoreDB] training-menu
     /// - Parameter trainingName: TrainingMenu.name.rawValue
-    func updateFavoriteCount(id trainingName: String) async throws {
-        let document = db.collection(AppConfig.Domain.dbCollection_trainingMenu).document(id)
-        if let data = try await document.getDocument().data() {
-            if let fetchedFavorite = data["favorite"] as? Int {
-                try await document.updateData([
-                    "favorite": fetchedFavorite + 1
-                ])
-            }
-        }
+    func updateFavoriteCount(trainingName: String) async throws {
+        let document = db.collection(AppConfig.Domain.dbCollection_trainingMenu).document(trainingName)
+        try await document.updateData([
+            "favorite": FieldValue.increment(Int64(1))
+        ])
     }
 
     /// トレーニングをお気に入り登録しているか

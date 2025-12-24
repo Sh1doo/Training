@@ -10,6 +10,7 @@ import FirebaseCore
 import FirebaseFirestore
 import RealmSwift
 
+@MainActor
 class TrainingListViewModel: ObservableObject {
     @Published var selectedSmallCategory: BodyCategory = .none
     @Published var trainingMenus: [TrainingMenu] = []
@@ -60,16 +61,19 @@ class TrainingListViewModel: ObservableObject {
     func toggleFavorite(menu: TrainingMenu) {
 
         var isFirstFavorite = false
-        if ( isFavoriteArray[menu.name] == nil ) {
+        if ( isFavoriteArray[menu.name.rawValue] == nil ) {
             isFirstFavorite = true
         }
 
         // お気に入り状態の更新
         do {
-            try service.updateFavoriteState(trainingName: menu.name.rawValue, isFavorite: !isFavoriteArray[menu.name] ?? true)
+            try service.updateFavoriteState(trainingName: menu.name.rawValue, isFavorite: !(isFavoriteArray[menu.name.rawValue] ?? true))
         } catch {
             print("Realm update favorite state error: \(error)")
         }
+        
+        // 初めての追加でなければお気に入り数は更新しない
+        if !isFirstFavorite { return }
         
         // お気に入り数の更新
         Task {
