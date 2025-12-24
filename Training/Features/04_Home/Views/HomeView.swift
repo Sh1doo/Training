@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject var trainingListViewModel = TrainingListViewModel()
     @StateObject var makeTrainingListViewModel = MakeTrainingListViewModel()
     @StateObject var userModel = UserModel()
     
-    //選択中の日付
+    // 編集中の日付
     @State private var editingDate: Date = Date()
     
     @State private var isShowTimer = false
@@ -22,10 +21,10 @@ struct HomeView: View {
         TabView {
             NavigationView {
                 VStack {
-                    _CalendarView(trainingListViewModel: trainingListViewModel, editingDate: $editingDate)
+                    _CalendarView(makeTrainingListViewModel: makeTrainingListViewModel, editingDate: $editingDate)
                         .padding()
                     
-                    TodaysTraining(model: trainingListViewModel)
+                    TodaysTraining(model: makeTrainingListViewModel)
                     
                     Spacer()
                     
@@ -49,7 +48,7 @@ struct HomeView: View {
                     Image(systemName: "person.crop.circle")
                     Text("Profile")
                 }
-            TrainingListView(model: trainingListViewModel)
+            TrainingListView()
                 .tabItem {
                     Image(systemName: "figure.strengthtraining.traditional")
                     Text("Workout")
@@ -71,7 +70,7 @@ struct HomeView: View {
 
 //本日のトレーニング
 struct TodaysTraining: View {
-    @ObservedObject var model: TrainingListViewModel
+    @ObservedObject var model: MakeTrainingListViewModel
     var body: some View {
         ZStack {
             VStack {

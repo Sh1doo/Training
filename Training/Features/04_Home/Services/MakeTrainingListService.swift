@@ -61,12 +61,4 @@ class MakeTrainingListService {
         }
         return returnArray
     }
-    
-    
-    /// トレーニングをお気に入り登録しているか
-    /// - Parameter trainingName: FirestoreDB登録名称
-    /// - Returns: トレーニングをお気に入り登録しているか
-    func isFavorite(trainingName: String) -> Bool {
-        return realm.objects(FavoriteTrainingObject.self).where({$0.name == trainingName}).first != nil
-    }
 }

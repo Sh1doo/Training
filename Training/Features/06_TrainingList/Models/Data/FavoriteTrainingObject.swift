@@ -10,6 +10,6 @@ import RealmSwift
 
 /// お気に入りトレーニング
 class FavoriteTrainingObject: Object, ObjectKeyIdentifiable {
-    @Persisted var name: String
+    @Persisted(primaryKey: true) var name: String
     @Persisted var isFavorite = false
 }
