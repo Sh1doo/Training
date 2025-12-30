@@ -170,3 +170,12 @@ CustomEnum が String 継承なので、CustomEnum(rawValue: "x") を試みる�
 これで、Firestoreから取ってきたデータをそのままSwiftUIの強力な enum 機能で扱えるようになりますね！
 
 次は、このデータを 「Firestoreからリアルタイムに取得して、変更があったら自動で画面を更新する（addSnapshotListener）」 方法に興味はありますか？
+
+
+この書き方はマスターしたい
+let fetchedMenus = snapshot.documents.compactMap { document -> TrainingMenu? in
+   try? document.data(as: TrainingMenu.self)
+}
+
+TrainingMenu.name.rawValue = DB設定項目名称
+TrainingMenu.name.localized = 翻訳

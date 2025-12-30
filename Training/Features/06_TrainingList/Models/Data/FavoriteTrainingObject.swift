@@ -10,6 +10,12 @@ import RealmSwift
 
 /// お気に入りトレーニング
 class FavoriteTrainingObject: Object, ObjectKeyIdentifiable {
-    @Persisted var name: String
+    @Persisted(primaryKey: true) var name: String
     @Persisted var isFavorite = false
+    
+    convenience init(name: String, isFavorite: Bool) {
+        self.init()
+        self.name = name
+        self.isFavorite = isFavorite
+    }
 }

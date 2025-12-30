@@ -14,12 +14,12 @@ import RealmSwift
 class MakeTrainingListViewModel: ObservableObject {
 
     @Published var isFetched = false
-    @Published var dayTrainingList: [TrainingSet] = [] // 元 trainingList
+    @Published var dayTrainingList: [TrainingSet] = []
     @Published var trainingMenus: [TrainingMenu] = []
 
     let service = MakeTrainingListService()
 
-    init(){
+    init() {
         dayTrainingList = service.getTrainingLog(trainingDate: Date().slashDateString)
     }
     
@@ -62,7 +62,6 @@ class MakeTrainingListViewModel: ObservableObject {
             ))
     }
 
-    
     /// Realmへの保存
     /// - Parameters:
     ///   - date: トレーニング実施予定日時
@@ -74,5 +73,13 @@ class MakeTrainingListViewModel: ObservableObject {
         } catch {
             print("Saving to Realm Failed: \(error)")
         }
+    }
+
+    /// 編集日付の変更
+    ///
+    /// トレーニング一覧の更新を行う
+    /// - Parameter date: 編集日付
+    func changeEditDate(_ date: Date) {
+        dayTrainingList = service.getTrainingLog(trainingDate: date.slashDateString)
     }
 }

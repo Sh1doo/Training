@@ -10,10 +10,9 @@ import SwiftUI
 struct _CalendarView: View {
     // Model
     @StateObject private var model = CalendarViewModel()
-    @StateObject private var colorModel = ColorModel()
-    @ObservedObject var trainingListViewModel: TrainingListViewModel
+    @ObservedObject var makeTrainingListViewModel: MakeTrainingListViewModel
 
-    // 編集中の日付 (全体共有用)
+    // 編集中の日付 (@Binding <- HomeView)
     @Binding var editingDate: Date
 
     var body: some View {
@@ -87,8 +86,7 @@ struct _CalendarView: View {
                             model.selectedDay = model.calendarViewDate
                             model.selectedDay.day = col + 1
                             editingDate = calendar.date(from: model.selectedDay) ?? Date()
-                            trainingListViewModel.listUpdate(editingDate: editingDate)
-                            
+                            makeTrainingListViewModel.changeEditDate(editingDate)
                         }
                         
                         //アンダーライン

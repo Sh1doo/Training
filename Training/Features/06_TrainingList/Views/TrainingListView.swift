@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TrainingListView: View {
-    @ObservedObject var model: TrainingListViewModel
+    private var model = TrainingListViewModel()
 
     @State private var selectedBigCategory = BodyCategory.upperbody
     @State private var selectedSmallCategory = BodyCategory.none
@@ -134,5 +134,5 @@ struct TrainingListView: View {
 }
 
 #Preview {
-    TrainingListView(model: TrainingListViewModel())
+    TrainingListView()
 }
