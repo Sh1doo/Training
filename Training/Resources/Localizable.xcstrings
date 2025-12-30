@@ -1,7 +1,92 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "abs" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "腹筋"
+          }
+        }
+      }
+    },
+    "arm" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "腕"
+          }
+        }
+      }
+    },
+    "back" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背中"
+          }
+        }
+      }
+    },
+    "BenchPress" : {
+      "comment" : "トレーニング名称",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ベンチプレス"
+          }
+        }
+      }
+    },
+    "calf" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ふくらはぎ"
+          }
+        }
+      }
+    },
+    "chest" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "胸"
+          }
+        }
+      }
+    },
+    "Deadlift" : {
+      "comment" : "トレーニング名称",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デッドリフト"
+          }
+        }
+      }
+    },
     "getStarted" : {
+      "comment" : "テキスト",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -18,7 +103,56 @@
         }
       }
     },
+    "gluteal" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "臀部"
+          }
+        }
+      }
+    },
+    "hip" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "腰"
+          }
+        }
+      }
+    },
+    "lowerbody" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下半身"
+          }
+        }
+      }
+    },
+    "shoulder" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "肩"
+          }
+        }
+      }
+    },
     "signIn" : {
+      "comment" : "テキスト",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -36,6 +170,7 @@
       }
     },
     "signUp" : {
+      "comment" : "テキスト",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -48,6 +183,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サインアップ"
+          }
+        }
+      }
+    },
+    "Squat" : {
+      "comment" : "トレーニング名称",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクワット"
+          }
+        }
+      }
+    },
+    "thigh" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大腿"
+          }
+        }
+      }
+    },
+    "upperbody" : {
+      "comment" : "カテゴリ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上半身"
           }
         }
       }
