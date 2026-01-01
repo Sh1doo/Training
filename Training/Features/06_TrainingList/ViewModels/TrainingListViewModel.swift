@@ -6,9 +6,6 @@
 //
 
 import Foundation
-import FirebaseCore
-import FirebaseFirestore
-import RealmSwift
 
 @MainActor
 class TrainingListViewModel: ObservableObject {

@@ -25,6 +25,18 @@
         }
       }
     },
+    "athome" : {
+      "comment" : "その他",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自宅でできる"
+          }
+        }
+      }
+    },
     "back" : {
       "comment" : "カテゴリ",
       "extractionState" : "manual",
@@ -37,6 +49,42 @@
         }
       }
     },
+    "barbell" : {
+      "comment" : "器具",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バーベル"
+          }
+        }
+      }
+    },
+    "beginner" : {
+      "comment" : "その他",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初心者におすすめ"
+          }
+        }
+      }
+    },
+    "bench" : {
+      "comment" : "器具",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ベンチ"
+          }
+        }
+      }
+    },
     "BenchPress" : {
       "comment" : "トレーニング名称",
       "extractionState" : "manual",
@@ -45,6 +93,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ベンチプレス"
+          }
+        }
+      }
+    },
+    "bodyweight" : {
+      "comment" : "器具",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自重"
+          }
+        }
+      }
+    },
+    "cable" : {
+      "comment" : "器具",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ケーブル"
           }
         }
       }
@@ -73,6 +145,18 @@
         }
       }
     },
+    "contracted" : {
+      "comment" : "種目",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コントラクト"
+          }
+        }
+      }
+    },
     "Deadlift" : {
       "comment" : "トレーニング名称",
       "extractionState" : "manual",
@@ -81,6 +165,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "デッドリフト"
+          }
+        }
+      }
+    },
+    "dumbbell" : {
+      "comment" : "器具",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダンベル"
+          }
+        }
+      }
+    },
+    "ezbar" : {
+      "comment" : "器具",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EZバー"
           }
         }
       }
@@ -110,7 +218,7 @@
         "ja-JP" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "臀部"
+            "value" : "お尻"
           }
         }
       }
@@ -135,6 +243,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下半身"
+          }
+        }
+      }
+    },
+    "machine" : {
+      "comment" : "器具",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マシン"
+          }
+        }
+      }
+    },
+    "midrange" : {
+      "comment" : "種目",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミッドレンジ"
+          }
+        }
+      }
+    },
+    "powerrack" : {
+      "comment" : "器具",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パワーラック"
           }
         }
       }
@@ -187,6 +331,18 @@
         }
       }
     },
+    "smithmachine" : {
+      "comment" : "器具",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スミスマシン"
+          }
+        }
+      }
+    },
     "Squat" : {
       "comment" : "トレーニング名称",
       "extractionState" : "manual",
@@ -199,6 +355,18 @@
         }
       }
     },
+    "stretch" : {
+      "comment" : "種目",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja-JP" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ストレッチ"
+          }
+        }
+      }
+    },
     "thigh" : {
       "comment" : "カテゴリ",
       "extractionState" : "manual",
@@ -206,7 +374,7 @@
         "ja-JP" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "大腿"
+            "value" : "太腿"
           }
         }
       }
