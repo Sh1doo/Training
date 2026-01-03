@@ -21,7 +21,7 @@ struct _SearchView: View {
             HStack{
                 Image(systemName: "magnifyingglass")
                     .onTapGesture {
-                        // 検索
+                        model.runSearch()
                     }
                 TextField("検索", text: $model.searchText)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
